@@ -1,0 +1,44 @@
+{
+  "name": "@adobe/aio-lib-templates",
+  "version": "1.0.0",
+  "description": "A library to communicate with Adobe App Builder Template Registry.",
+  "scripts": {
+    "test": "jest --config=./test/jest.config.json",
+    "lint:check": "eslint --ext .js .",
+    "lint:fix": "eslint --ext .js --fix .",
+    "jsdoc": "jsdoc2md -f 'src/*.js' > doc/api.md",
+    "typings": "jsdoc -t node_modules/tsd-jsdoc/dist -r src -d .",
+    "generate-docs": "npm run jsdoc && npm run typings"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adobe/aio-lib-templates.git"
+  },
+  "author": "Adobe Inc.",
+  "license": "Apache-2.0",
+  "main": "src/index.js",
+  "bugs": {
+    "url": "https://github.com/adobe/aio-lib-templates/issues"
+  },
+  "homepage": "https://github.com/adobe/aio-lib-templates",
+  "dependencies": {
+    "@adobe/aio-lib-core-errors": "^3.0.1",
+    "@adobe/aio-lib-core-logging": "^1.2.0",
+    "axios": "^0.27.2"
+  },
+  "engines": {
+    "node": "^14 || ^16"
+  },
+  "files": [
+    "src"
+  ],
+  "devDependencies": {
+    "eslint": "^8.16.0",
+    "eslint-plugin-jest": "^26.4.6",
+    "eslint-plugin-node": "^11.1.0",
+    "jest": "^28.1.0",
+    "jsdoc-to-markdown": "^7.1.1",
+    "nock": "^13.2.4",
+    "tsd-jsdoc": "^2.5.0"
+  }
+}
