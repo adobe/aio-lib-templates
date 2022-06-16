@@ -32,13 +32,13 @@ async function sdkTest() {
     // an optional Search Criteria object
     // without Search Criteria the following code will paginate through all Adobe App Builder templates
     const searchCriteria = {
-        'categories': ['action', 'ui'],
-        'statuses': ['Approved'],
-        'adobeRecommended': true
+        [sdk.SEARCH_CRITERIA_CATEGORIES]: ['action', 'ui'],
+        [sdk.SEARCH_CRITERIA_STATUSES]: [sdk.TEMPLATE_STATUS_APPROVED],
+        [sdk.SEARCH_CRITERIA_ADOBE_RECOMMENDED]: true
     };
     // an optional OrderBy Criteria object
     const orderByCriteria = {
-        'names': 'desc'
+        [sdk.ORDER_BY_CRITERIA_NAMES]: sdk.ORDER_BY_CRITERIA_SORT_DESC
     };
     for await (const templates of templateRegistryClient.getTemplates(searchCriteria, orderByCriteria)) {
         for (const template of templates) {
@@ -49,21 +49,30 @@ async function sdkTest() {
 ```
 
 ##### Supported **Search Criteria** properties
-| Key                | Value           | Description                                                             |
-| ------------------ | --------------- | ----------------------------------------------------------------------- |
-| `names`            | list of strings | Filter by template names.                                               |
-| `categories`       | list of strings | Filter by template categories.                                          |
-| `apis`             | list of strings | Filter by template APIs.                                                |
-| `statuses`         | list of strings | Filter by template statuses ("InVerification", "Approved", "Rejected"). |
-| `adobeRecommended` | boolean         | Indicates templates featured by Adobe.                                  |
+| Key                | Value                      | SDK Constant                      | Description                                                                                                        |
+| ------------------ | -------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `names`            | list of strings            | SEARCH_CRITERIA_NAMES             | Filter by template names.                                                                                          |
+| `categories`       | list of strings            | SEARCH_CRITERIA_CATEGORIES        | Filter by template categories.                                                                                     |
+| `statuses`         | list of strings            | SEARCH_CRITERIA_STATUSES          | Filter by template statuses (TEMPLATE_STATUS_IN_VERIFICATION, TEMPLATE_STATUS_APPROVED, TEMPLATE_STATUS_REJECTED). |
+| `apis`             | list of strings            | SEARCH_CRITERIA_APIS              | Filter by template APIs. Supports EMPTY and ANY filters.                                                           |
+| `extensions`       | list of strings            | SEARCH_CRITERIA_EXTENSIONS        | Filter by template extension points. Supports EMPTY and ANY filters.                                               |
+| `events`           | EMPTY and ANY filters only | SEARCH_CRITERIA_EVENTS            | Filter by template events. For now supports EMPTY and ANY filters only.                                            |
+| `runtime`          | boolean                    | SEARCH_CRITERIA_RUNTIME           | Is Adobe I/O Runtime required or not? Supports EMPTY and ANY filters.                                              |
+| `adobeRecommended` | boolean                    | SEARCH_CRITERIA_ADOBE_RECOMMENDED | Indicates templates featured by Adobe.                                                                             |
+
+###### EMPTY and ANY filters
+| Filter Type  | Value                 | SDK Constant                | Description                                           |
+| ------------ | --------------------- | --------------------------- | ----------------------------------------------------- |
+| EMPTY (NONE) | '', an empty string   | SEARCH_CRITERIA_FILTER_NONE | Returns all templates that don't have a property set. |
+| ANY          | *, an asterisk symbol | SEARCH_CRITERIA_FILTER_ANY  | Returns all templates that have a property set.       |
 
 ##### Supported **OrderBy Criteria** properties
-| Key                | Value               | Description                           |
-| ------------------ | ------------------- | ------------------------------------- |
-| `names`            | string, desc or asc | Sort by template names.               |
-| `statuses`         | string, desc or asc | Sort by template statuses.            |
-| `adobeRecommended` | string, desc or asc | Sort by the "Adobe Recommended" flag. |
-| `publishDate`      | string, desc or asc | Sort by a publish date.               |
+| Key                | Value               | SDK Constant                        | Description                           |
+| ------------------ | ------------------- | ----------------------------------- | ------------------------------------- |
+| `names`            | string, desc or asc | ORDER_BY_CRITERIA_NAMES             | Sort by template names.               |
+| `statuses`         | string, desc or asc | ORDER_BY_CRITERIA_STATUSES          | Sort by template statuses.            |
+| `adobeRecommended` | string, desc or asc | ORDER_BY_CRITERIA_ADOBE_RECOMMENDED | Sort by the "Adobe Recommended" flag. |
+| `publishDate`      | string, desc or asc | ORDER_BY_CRITERIA_PUBLISH_DATE      | Sort by a publish date.               |
 
 #### Get a template from Adobe App Builder Template Registry
 Get a template from [Adobe App Builder Template Registry](https://github.com/adobe/aio-template-submission).
@@ -98,7 +107,7 @@ async function sdkTest() {
     try {
         const template = await templateRegistryClient.addTemplate(templateName, githubRepoUrl);
         console.log(`A new template "${template.name}" has been successfully added to Adobe App Builder Template Registry.`);
-        console.log(`Its status is "InVerification". Please use the "${template.reviewLink}" link to check the verification status.`);
+        console.log(`Its status is "${sdk.TEMPLATE_STATUS_IN_VERIFICATION}". Please use the "${template.reviewLink}" link to check the verification status.`);
     } catch (error) {
         console.log(error.toString());
     }

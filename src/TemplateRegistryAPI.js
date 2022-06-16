@@ -13,68 +13,7 @@ const axios = require('axios');
 const logger = require('@adobe/aio-lib-core-logging')('@adobe/aio-lib-templates:TemplateRegistry', { 'level': process.env.LOG_LEVEL });
 const { codes } = require('./SDKErrors');
 
-/**
- * @typedef {Object} Auth
- * @property {String} token IMS access token
- */
-/**
- * @typedef {Object} Server
- * @property {String} url API Server Url address
- * @property {String} version API version
- */
-/**
- * @typedef {Object} Configuration
- * @property {Auth} auth Auth object
- * @property {Server} server Server object
- */
-/**
- * @typedef {Object} Links
- * @property {String} npm A link to the template on npmjs.com
- * @property {String} github A link to the Github repository containing the template's source code.
- */
-/**
- * @typedef {Object} Extension
- * @property {String} serviceCode Service Code
- */
-/**
- * @typedef {Object} API
- * @property {String} code The sdk code of the service.
- */
-/**
- * @typedef {Object} Event
- * @property {Consumer} consumer Consumer
- * @property {Provider} provider Provider
- */
-/**
- * @typedef {Object} Consumer
- * @property {String} type Type
- * @property {Array.<String>} provider A list of providers.
- */
-/**
- * @typedef {Object} Provider
- * @property {String} name Name
- * @property {String} description Description
- * @property {Array.<String>} "event-types" A list of events.
- */
-/**
- * @typedef {Object} Template
- * @property {String} id The unique identifier of the template in the UUID format.
- * @property {String} author The name of the template's author on npmjs.com Applicable for "Approved" templates only.
- * @property {String} name The name of the template on npmjs.com
- * @property {String} status A status of a template in Template Registry. One of "InVerification", "Approved", "Rejected".
- * @property {String} description A description of the template. Applicable for "Approved" templates only.
- * @property {String} latestVersion The version of the template in the semver format. Applicable for "Approved" templates only.
- * @property {Date} publishDate The date the template was published. Applicable for "Approved" templates only.
- * @property {Boolean} adobeRecommended Whether the template is recommended by Adobe. Applicable for "Approved" templates only.
- * @property {Array.<String>} keywords A list of keywords specified in the packages.json file. Applicable for "Approved" templates only.
- * @property {Links} links A list of locations where the template's code can be found.
- * @property {Array.<String>} categories A list of categories the template belongs to. Applicable for "Approved" templates only.
- * @property {Boolean} runtime FALSE by default. Declares if Runtime should be added to namespaces. Applicable for "Approved" templates only.
- * @property {Extension} extension Optional. It contains the extension metadata if the template implements an extension point. Applicable for "Approved" templates only.
- * @property {Array.<API>} apis Optional. A list of Adobe APIs required by the template. Applicable for "Approved" templates only.
- * @property {Event} event Optional. The event config for the template. Applicable for "Approved" templates only.
- * @property {String} reviewLink A link to "Template Review Request" Github Issue. Applicable for "InVerification" and "Rejected" templates only.
- */
+require('./types.jsdoc'); // for VS Code autocomplete
 
 /**
  * This class provides methods to call Template Registry APIs.

@@ -1,3 +1,55 @@
+/*
+Copyright 2022 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
+/**
+ * Initializes a TemplateRegistryAPI object.
+ * @param config - Optional configuration parameters.
+ */
+declare class TemplateRegistryAPI {
+    constructor(config: Configuration);
+    /**
+     * Gets a template data stored in Template Registry by a template name.
+     * @param templateName - A template name (an NPM package name).
+     */
+    getTemplate(templateName: string): Promise<Template>;
+    /**
+     * Gets template data objects stored in Template Registry satisfying the provided Search criteria and ordered by fields provided in the Order By criteria.
+     * It allows to paginate over the results. By default 50 template data objects are yielded.
+     * @param searchCriteria - A Search criteria object.
+     * @param orderByCriteria - An Order By criteria object.
+     * @param size - How many template data objects to yield.
+     * @returns The yielded value is an array of template data objects.
+     */
+    getTemplates(searchCriteria: any, orderByCriteria: any, size?: number): AsyncGenerator;
+    /**
+     * Adds a template to Template Registry.
+     * @param templateName - A template name (an NPM package name).
+     * @param githubRepoUrl - A Github repo URL that holds a template's source code.
+     * @returns A template data object added to Template Registry.
+     */
+    addTemplate(templateName: string, githubRepoUrl: string): Promise<Template>;
+    /**
+     * Deletes a template from Template Registry.
+     * @param templateName - A template name (an NPM package name).
+     */
+    deleteTemplate(templateName: string): Promise<undefined>;
+}
+
+/**
+ * Returns a new TemplateRegistryAPI object.
+ * @param config - Optional configuration parameters.
+ * @returns A new TemplateRegistryAPI object.
+ */
+declare function init(config: Configuration): TemplateRegistryAPI;
+
 /**
  * @property token - IMS access token
  */
@@ -111,70 +163,4 @@ declare type Template = {
     event: Event;
     reviewLink: string;
 };
-
-/**
- * Initializes a TemplateRegistryAPI object.
- * @param config - Optional configuration parameters.
- */
-declare class TemplateRegistryAPI {
-    constructor(config: Configuration);
-    /**
-     * Gets a template data stored in Template Registry by a template name.
-     * @param templateName - A template name (an NPM package name).
-     */
-    getTemplate(templateName: string): Promise<Template>;
-    /**
-     * Gets template data objects stored in Template Registry satisfying the provided Search criteria and ordered by fields provided in the Order By criteria.
-     * It allows to paginate over the results. By default 50 template data objects are yielded.
-     * @param searchCriteria - A Search criteria object.
-     * @param orderByCriteria - An Order By criteria object.
-     * @param size - How many template data objects to yield.
-     * @returns The yielded value is an array of template data objects.
-     */
-    getTemplates(searchCriteria: any, orderByCriteria: any, size?: number): AsyncGenerator;
-    /**
-     * Adds a template to Template Registry.
-     * @param templateName - A template name (an NPM package name).
-     * @param githubRepoUrl - A Github repo URL that holds a template's source code.
-     * @returns A template data object added to Template Registry.
-     */
-    addTemplate(templateName: string, githubRepoUrl: string): Promise<Template>;
-    /**
-     * Deletes a template from Template Registry.
-     * @param templateName - A template name (an NPM package name).
-     */
-    deleteTemplate(templateName: string): Promise<undefined>;
-}
-
-/**
- * @property token - IMS access token
- */
-declare type Auth = {
-    token: string;
-};
-
-/**
- * @property url - API Server Url address
- * @property version - API version
- */
-declare type Server = {
-    url: string;
-    version: string;
-};
-
-/**
- * @property auth - Auth object
- * @property server - Server object
- */
-declare type Configuration = {
-    auth: Auth;
-    server: Server;
-};
-
-/**
- * Returns a new TemplateRegistryAPI object.
- * @param config - Optional configuration parameters.
- * @returns A new TemplateRegistryAPI object.
- */
-declare function init(config: Configuration): TemplateRegistryAPI;
 
