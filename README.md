@@ -61,10 +61,10 @@ async function sdkTest() {
 | `adobeRecommended` | boolean                    | Indicates templates featured by Adobe.                                  |
 
 ###### EMPTY and ANY filters
-| Filter Type | Value                  | Description                                           |
-| ----------- | ---------------------- | ----------------------------------------------------- |
-| EMPTY       | '' (an empty string)   | Returns all templates that don't have a property set. |
-| ANY         | * (an asterisk symbol) | Returns all templates that have a property set.       |
+| Filter Type  | Value                  | Description                                           |
+| ------------ | ---------------------- | ----------------------------------------------------- |
+| EMPTY (NONE) | '' (an empty string)   | Returns all templates that don't have a property set. |
+| ANY          | * (an asterisk symbol) | Returns all templates that have a property set.       |
 
 ##### Supported **OrderBy Criteria** properties
 | Key                | Value               | Description                           |
