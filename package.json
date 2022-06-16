@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A library to communicate with Adobe App Builder Template Registry.",
   "scripts": {
+    "pretest": "npm run lint:check",
     "test": "jest --config=./test/jest.config.json",
     "lint:check": "eslint --ext .js .",
     "lint:fix": "eslint --ext .js --fix .",

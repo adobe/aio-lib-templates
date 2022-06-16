@@ -9,20 +9,7 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-/**
- * @typedef {Object} Auth
- * @property {String} token IMS access token
- */
-/**
- * @typedef {Object} Server
- * @property {String} url API Server Url address
- * @property {String} version API version
- */
-/**
- * @typedef {Object} Configuration
- * @property {Auth} auth Auth object
- * @property {Server} server Server object
- */
+require('./types.jsdoc'); // for VS Code autocomplete
 
 const logger = require('@adobe/aio-lib-core-logging')('@adobe/aio-lib-templates:index', { 'level': process.env.LOG_LEVEL });
 const TemplateRegistryAPI = require('./TemplateRegistryAPI');

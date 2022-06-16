@@ -49,13 +49,22 @@ async function sdkTest() {
 ```
 
 ##### Supported **Search Criteria** properties
-| Key                | Value           | Description                                                             |
-| ------------------ | --------------- | ----------------------------------------------------------------------- |
-| `names`            | list of strings | Filter by template names.                                               |
-| `categories`       | list of strings | Filter by template categories.                                          |
-| `apis`             | list of strings | Filter by template APIs.                                                |
-| `statuses`         | list of strings | Filter by template statuses ("InVerification", "Approved", "Rejected"). |
-| `adobeRecommended` | boolean         | Indicates templates featured by Adobe.                                  |
+| Key                | Value                      | Description                                                             |
+| ------------------ | -------------------------- | ----------------------------------------------------------------------- |
+| `names`            | list of strings            | Filter by template names.                                               |
+| `categories`       | list of strings            | Filter by template categories.                                          |
+| `statuses`         | list of strings            | Filter by template statuses ("InVerification", "Approved", "Rejected"). |
+| `apis`             | list of strings            | Filter by template APIs. Supports EMPTY and ANY filters.                |
+| `extensions`       | list of strings            | Filter by template extension points. Supports EMPTY and ANY filters.    |
+| `events`           | EMPTY and ANY filters only | Filter by template events. For now supports EMPTY and ANY filters only. |
+| `runtime`          | boolean                    | Is Adobe I/O Runtime required or not? Supports EMPTY and ANY filters.   |
+| `adobeRecommended` | boolean                    | Indicates templates featured by Adobe.                                  |
+
+###### EMPTY and ANY filters
+| Filter Type | Value                  | Description                                           |
+| ----------- | ---------------------- | ----------------------------------------------------- |
+| EMPTY       | '' (an empty string)   | Returns all templates that don't have a property set. |
+| ANY         | * (an asterisk symbol) | Returns all templates that have a property set.       |
 
 ##### Supported **OrderBy Criteria** properties
 | Key                | Value               | Description                           |

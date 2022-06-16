@@ -30,12 +30,6 @@ during an object initialization:
 <dd></dd>
 <dt><a href="#Configuration">Configuration</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#Auth">Auth</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="#Server">Server</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="#Configuration">Configuration</a> : <code>Object</code></dt>
-<dd></dd>
 <dt><a href="#Links">Links</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#Extension">Extension</a> : <code>Object</code></dt>
@@ -144,38 +138,6 @@ Returns a new TemplateRegistryAPI object.
 | Param | Type | Description |
 | --- | --- | --- |
 | config | [<code>Configuration</code>](#Configuration) | Optional configuration parameters. |
-
-<a name="Auth"></a>
-
-## Auth : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| token | <code>String</code> | IMS access token |
-
-<a name="Server"></a>
-
-## Server : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| url | <code>String</code> | API Server Url address |
-| version | <code>String</code> | API version |
-
-<a name="Configuration"></a>
-
-## Configuration : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| auth | [<code>Auth</code>](#Auth) | Auth object |
-| server | [<code>Server</code>](#Server) | Server object |
 
 <a name="Auth"></a>
 
