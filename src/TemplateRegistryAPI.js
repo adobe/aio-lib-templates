@@ -310,7 +310,7 @@ class TemplateRegistryAPI {
             'links': response.links,
             'categories': response?.categories,
             'runtime': (response.status === 'Approved') ? !!response?.runtime : undefined,
-            'extension': response?.extension,
+            'extensions': response?.extensions,
             'apis': response?.apis,
             'event': response?.event,
             'reviewLink': response._links?.review?.href
