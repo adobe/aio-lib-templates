@@ -30,7 +30,7 @@ governing permissions and limitations under the License.
  */
 /**
  * @typedef {Object} Extension
- * @property {String} serviceCode Service Code
+ * @property {String} extensionPointId Extension Point Id
  */
 /**
  * @typedef {Object} API
@@ -66,7 +66,7 @@ governing permissions and limitations under the License.
  * @property {Links} links A list of locations where the template's code can be found.
  * @property {Array.<String>} categories A list of categories the template belongs to. Applicable for "Approved" templates only.
  * @property {Boolean} runtime FALSE by default. Declares if Runtime should be added to namespaces. Applicable for "Approved" templates only.
- * @property {Extension} extension Optional. It contains the extension metadata if the template implements an extension point. Applicable for "Approved" templates only.
+ * @property {Array.<Extension>} extensions Optional. Extension points that a template implements. Applicable for "Approved" templates only.
  * @property {Array.<API>} apis Optional. A list of Adobe APIs required by the template. Applicable for "Approved" templates only.
  * @property {Event} event Optional. The event config for the template. Applicable for "Approved" templates only.
  * @property {String} reviewLink A link to "Template Review Request" Github Issue. Applicable for "InVerification" and "Rejected" templates only.

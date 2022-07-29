@@ -51,9 +51,11 @@
         "npm": "https://www.npmjs.com/package/@author/app-builder-template-1",
         "github": "https://github.com/author/app-builder-template-1"
     },
-    "extension": {
-        "serviceCode": "dx/excshell/1"
-    },
+    "extensions": [
+        {
+            "extensionPointId": "dx/excshell/1"
+        }
+    ],
     "categories": [
         "action",
         "ui"
