@@ -190,7 +190,7 @@ Returns a new TemplateRegistryAPI object.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| serviceCode | <code>String</code> | Service Code |
+| extensionPointId | <code>String</code> | Extension Point Id |
 
 <a name="API"></a>
 
@@ -256,7 +256,7 @@ Returns a new TemplateRegistryAPI object.
 | links | [<code>Links</code>](#Links) | A list of locations where the template's code can be found. |
 | categories | <code>Array.&lt;String&gt;</code> | A list of categories the template belongs to. Applicable for "Approved" templates only. |
 | runtime | <code>Boolean</code> | FALSE by default. Declares if Runtime should be added to namespaces. Applicable for "Approved" templates only. |
-| extension | [<code>Extension</code>](#Extension) | Optional. It contains the extension metadata if the template implements an extension point. Applicable for "Approved" templates only. |
+| extensions | [<code>Array.&lt;Extension&gt;</code>](#Extension) | Optional. Extension points that a template implements. Applicable for "Approved" templates only. |
 | apis | [<code>Array.&lt;API&gt;</code>](#API) | Optional. A list of Adobe APIs required by the template. Applicable for "Approved" templates only. |
 | event | [<code>Event</code>](#Event) | Optional. The event config for the template. Applicable for "Approved" templates only. |
 | reviewLink | <code>String</code> | A link to "Template Review Request" Github Issue. Applicable for "InVerification" and "Rejected" templates only. |

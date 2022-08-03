@@ -368,7 +368,7 @@ describe('TemplateRegistryAPI', () => {
                 'links': response.links,
                 'categories': response.categories,
                 'runtime': false,
-                'extension': response.extension,
+                'extensions': response.extensions,
                 'apis': response.apis,
                 'event': undefined,
                 'reviewLink': undefined
@@ -389,7 +389,7 @@ describe('TemplateRegistryAPI', () => {
                 'links': response.links,
                 'categories': undefined,
                 'runtime': undefined,
-                'extension': undefined,
+                'extensions': undefined,
                 'apis': undefined,
                 'event': undefined,
                 'reviewLink': response._links.review.href
@@ -412,7 +412,7 @@ describe('TemplateRegistryAPI', () => {
                 },
                 'categories': undefined,
                 'runtime': undefined,
-                'extension': undefined,
+                'extensions': undefined,
                 'apis': undefined,
                 'event': undefined,
                 'reviewLink': 'https://github.com/adobe/aio-template-submission/issues/xxx-3'
@@ -444,7 +444,7 @@ describe('TemplateRegistryAPI', () => {
                     'ui'
                 ],
                 'runtime': true,
-                'extension': undefined,
+                'extensions': undefined,
                 'apis': [
                     {
                         'code': 'AnalyticsSDK',

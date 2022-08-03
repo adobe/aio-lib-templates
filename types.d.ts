@@ -85,10 +85,10 @@ declare type Links = {
 };
 
 /**
- * @property serviceCode - Service Code
+ * @property extensionPointId - Extension Point Id
  */
 declare type Extension = {
-    serviceCode: string;
+    extensionPointId: string;
 };
 
 /**
@@ -140,7 +140,7 @@ declare type Provider = {
  * @property links - A list of locations where the template's code can be found.
  * @property categories - A list of categories the template belongs to. Applicable for "Approved" templates only.
  * @property runtime - FALSE by default. Declares if Runtime should be added to namespaces. Applicable for "Approved" templates only.
- * @property extension - Optional. It contains the extension metadata if the template implements an extension point. Applicable for "Approved" templates only.
+ * @property extensions - Optional. Extension points that a template implements. Applicable for "Approved" templates only.
  * @property apis - Optional. A list of Adobe APIs required by the template. Applicable for "Approved" templates only.
  * @property event - Optional. The event config for the template. Applicable for "Approved" templates only.
  * @property reviewLink - A link to "Template Review Request" Github Issue. Applicable for "InVerification" and "Rejected" templates only.
@@ -158,7 +158,7 @@ declare type Template = {
     links: Links;
     categories: String[];
     runtime: boolean;
-    extension: Extension;
+    extensions: Extension[];
     apis: API[];
     event: Event;
     reviewLink: string;
