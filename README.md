@@ -32,7 +32,7 @@ async function sdkTest() {
     // an optional Search Criteria object
     // without Search Criteria the following code will paginate through all Adobe App Builder templates
     const searchCriteria = {
-        [sdk.SEARCH_CRITERIA_CATEGORIES]: ['action', 'ui'],
+        [sdk.SEARCH_CRITERIA_CATEGORIES]: ['action', '!ui'],
         [sdk.SEARCH_CRITERIA_STATUSES]: [sdk.TEMPLATE_STATUS_APPROVED],
         [sdk.SEARCH_CRITERIA_ADOBE_RECOMMENDED]: true
     };
@@ -65,6 +65,7 @@ async function sdkTest() {
 | ------------ | --------------------- | --------------------------- | ----------------------------------------------------- |
 | EMPTY (NONE) | '', an empty string   | SEARCH_CRITERIA_FILTER_NONE | Returns all templates that don't have a property set. |
 | ANY          | *, an asterisk symbol | SEARCH_CRITERIA_FILTER_ANY  | Returns all templates that have a property set.       |
+| NOT          | !, an exclamation point symbol | SEARCH_CRITERIA_FILTER_NOT  | Excludes all templates which contain the negated query parameter value.|
 
 ##### Supported **OrderBy Criteria** properties
 | Key                | Value               | SDK Constant                        | Description                           |
