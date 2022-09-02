@@ -32,7 +32,7 @@ async function sdkTest() {
     // an optional Search Criteria object
     // without Search Criteria the following code will paginate through all Adobe App Builder templates
     const searchCriteria = {
-        [sdk.SEARCH_CRITERIA_CATEGORIES]: ['action', '!ui'],
+        [sdk.SEARCH_CRITERIA_CATEGORIES]: ['action', sdk.SEARCH_CRITERIA_FILTER_NOT + 'ui'],
         [sdk.SEARCH_CRITERIA_STATUSES]: [sdk.TEMPLATE_STATUS_APPROVED],
         [sdk.SEARCH_CRITERIA_ADOBE_RECOMMENDED]: true
     };
