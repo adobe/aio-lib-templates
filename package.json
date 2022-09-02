@@ -1,6 +1,6 @@
 {
   "name": "@adobe/aio-lib-templates",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A library to communicate with Adobe App Builder Template Registry.",
   "scripts": {
     "test": "npm run lint:check && npm run unit-tests",
