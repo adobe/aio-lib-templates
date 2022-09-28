@@ -60,7 +60,7 @@ async function sdkTest() {
 | `runtime`          | boolean                    | SEARCH_CRITERIA_RUNTIME           | Is Adobe I/O Runtime required or not? Supports EMPTY and ANY filters.                                              |
 | `adobeRecommended` | boolean                    | SEARCH_CRITERIA_ADOBE_RECOMMENDED | Indicates templates featured by Adobe.                                                                             |
 
-###### EMPTY and ANY filters
+###### Filter Operators
 | Filter Type  | Value                 | SDK Constant                | Description                                           |
 | ------------ | --------------------- | --------------------------- | ----------------------------------------------------- |
 | EMPTY (NONE) | '', an empty string   | SEARCH_CRITERIA_FILTER_NONE | Returns all templates that don't have a property set. |
