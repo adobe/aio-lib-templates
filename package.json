@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/adobe/aio-lib-templates",
   "dependencies": {
-    "@adobe/aio-lib-core-errors": "^3.0.1",
-    "@adobe/aio-lib-core-logging": "^1.2.0",
+    "@adobe/aio-lib-core-errors": "^4",
+    "@adobe/aio-lib-core-logging": "^3",
     "axios": "^0.27.2"
   },
   "engines": {
