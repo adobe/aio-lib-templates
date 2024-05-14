@@ -37,6 +37,13 @@ declare class TemplateRegistryAPI {
      */
     addTemplate(templateName: string, githubRepoUrl: string): Promise<Template>;
     /**
+     * Updates a template to Template Registry.
+     * @param templateId - A template Id (an NPM package mongo Id).
+     * @param githubRepoUrl - A Github repo URL that holds a template's source code.
+     * @returns A template data object added to Template Registry.
+     */
+    updateTemplate(templateId: string, githubRepoUrl: string): Promise<Template>;
+    /**
      * Deletes a template from Template Registry.
      * @param templateName - A template name (an NPM package name).
      */

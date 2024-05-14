@@ -113,6 +113,23 @@ class TemplateRegistryAPI {
     }
 
     /**
+     * Updates a template to Template Registry.
+     *
+     * @param {String} templateName A template name (an NPM package name).
+     * @param {String} githubRepoUrl A Github repo URL that holds a template's source code.
+     * @returns {Promise<Template>} A template data object added to Template Registry.
+     */
+    async updateTemplate(templateId, githubRepoUrl) {
+        const url = `${this._getServerApiUrl()}/${templateId}`;
+        const response = await this._makePutRequest(url, {
+            'links': {
+                'github': githubRepoUrl
+            }
+        });
+        return this._toTemplate(response);
+    }
+
+    /**
      * Deletes a template from Template Registry.
      *
      * @param {String} templateName A template name (an NPM package name).
@@ -182,6 +199,42 @@ class TemplateRegistryAPI {
         }
         try {
             const response = await axios.post(url, payload, {
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.auth.token}`
+                }
+            });
+            if (response.status === 200) {
+                return response.data;
+            } else {
+                const error = `Error posting to API "${url}". Response code is ${response.status}.`;
+                logger.warn(error);
+                throw new codes.ERROR_UNEXPECTED_ERROR({ 'messageValues': 'An unexpected error happened. Please check logs or try again later.' });
+            }
+        } catch (e) {
+            const error = `Error posting to API "${url}". ${e.toString()}`;
+            logger.warn(error);
+            const exception = this._processResponseException(e);
+            throw exception;
+        }
+    }
+
+    /**
+     * For the internal use only. It is not supposed to be used outside of the class.
+     *
+     * @param {String} url Template Registry API Endpoint URL
+     * @param {Object} payload A request payload.
+     * @returns {Promise<Object>}
+     * @private
+     */
+    async _makePutRequest(url, payload) {
+        if (!this.auth.token) {
+            throw new codes.ERROR_SDK_INITIALIZATION({
+                'messageValues': 'In order to add a template to Template Registry, please provide IMS Access Token during the initialization.'
+            });
+        }
+        try {
+            const response = await axios.put(url, payload, {
                 'headers': {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.auth.token}`
