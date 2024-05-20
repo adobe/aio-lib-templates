@@ -66,6 +66,7 @@ during an object initialization:
     * [.getTemplates(searchCriteria, orderByCriteria, size)](#TemplateRegistryAPI+getTemplates) ⇒ <code>AsyncGenerator</code>
     * [.addTemplate(templateName, githubRepoUrl)](#TemplateRegistryAPI+addTemplate) ⇒ [<code>Promise.&lt;Template&gt;</code>](#Template)
     * [.deleteTemplate(templateName)](#TemplateRegistryAPI+deleteTemplate) ⇒ <code>Promise.&lt;undefined&gt;</code>
+    * [.installTemplate(templateId, templateInstallRequestBody)](#TemplateRegistryAPI+installTemplate) ⇒ [<code>Promise.&lt;ResponseObject&gt;</code>
 
 <a name="new_TemplateRegistryAPI_new"></a>
 
@@ -126,6 +127,19 @@ Deletes a template from Template Registry.
 | Param | Type | Description |
 | --- | --- | --- |
 | templateName | <code>String</code> | A template name (an NPM package name). |
+
+<a name="TemplateRegistryAPI+installTemplate"></a>
+
+### templateRegistryAPI.installTemplate(templateId, templateInstallRequestBody) ⇒ [<code>Promise.&lt;ResponseObject&gt;</code>]
+Installs a given template.
+
+**Kind**: instance method of [<code>TemplateRegistryAPI</code>](#TemplateRegistryAPI)
+**Returns**: [<code>Promise.&lt;ResponseObject&gt;</code>] - A response object containing details of new project created with the given template.
+
+| Param      | Type | Description |
+|------------| --- |-------------|
+| templateId | <code>String</code> | Template Id |
+| templateInstallRequestBody | <code>Object</code> | Template Install Request Body |
 
 <a name="init"></a>
 
@@ -260,4 +274,18 @@ Returns a new TemplateRegistryAPI object.
 | apis | [<code>Array.&lt;API&gt;</code>](#API) | Optional. A list of Adobe APIs required by the template. Applicable for "Approved" templates only. |
 | event | [<code>Event</code>](#Event) | Optional. The event config for the template. Applicable for "Approved" templates only. |
 | reviewLink | <code>String</code> | A link to "Template Review Request" Github Issue. Applicable for "InVerification" and "Rejected" templates only. |
+
+<a name = "TemplateInstallRequestBody"></a>
+
+## TemplateInstallRequestBody : <code>Object</code>
+**Kind**: global typedef
+**Properties**
+
+| Name | Type                       | Description |
+| --- |----------------------------| --- |
+| OrgId | <code>String</code>        | The organization id |
+| projectName | <code>String</code>        | The name of the project |
+| description | <code>String</code>        | The description of the project |
+| metadata | <code>Object</code>        | Key value pairs of credential metadata like allowed domains, redirect uris etc |
+| apis | <code>Array<Object></code> | Optional field to include license configs to be assigned to a technical account for an individual API |
 

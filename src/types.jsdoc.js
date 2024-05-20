@@ -1,5 +1,5 @@
 /*
-Copyright 2022 Adobe. All rights reserved.
+Copyright 2024 Adobe. All rights reserved.
 This file is licensed to you under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License. You may obtain a copy
 of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -70,4 +70,12 @@ governing permissions and limitations under the License.
  * @property {Array.<API>} apis Optional. A list of Adobe APIs required by the template. Applicable for "Approved" templates only.
  * @property {Event} event Optional. The event config for the template. Applicable for "Approved" templates only.
  * @property {String} reviewLink A link to "Template Review Request" Github Issue. Applicable for "InVerification" and "Rejected" templates only.
+ */
+/**
+ * @typedef {Object} TemplateInstallRequestBody
+ * @property {String} orgId - The organization id
+ * @property {String} projectName - The name of the project
+ * @property {String} description - The description of the project
+ * @property {Object} metadata - Key value pairs of credential metadata like allowed domains, redirect uris etc
+ * @property {Array<Object>} apis - Optional field to include license configs to be assigned to a technical account for an individual API
  */
