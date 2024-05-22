@@ -116,6 +116,31 @@ async function sdkTest() {
 }
 ```
 
+#### Updates a template to Adobe App Builder Template Registry
+Updates a template to [Adobe App Builder Template Registry](https://github.com/adobe/aio-template-submission).
+
+**Note: It's only accessible with an IMS service token**
+
+```javascript
+const sdk = require('@adobe/aio-lib-templates');
+
+async function sdkTest() {
+    const templateRegistryClient = sdk.init({
+        'auth': {
+            'token': '<IMS_ACCESS_TOKEN>'
+        }
+    });
+    const templateId = '66431bb2f682a35bf4b1b002';
+    const githubRepoUrl = 'https://github.com/author/app-builder-template';
+    try {
+        const template = await templateRegistryClient.updateTemplate(templateId, githubRepoUrl);
+        console.log(`template with Id "${template.templateId}" has been successfully updated to Adobe App Builder Template Registry.`);
+    } catch (error) {
+        console.log(error.toString());
+    }
+}
+```
+
 #### Delete a template from Adobe App Builder Template Registry
 Delete a template from [Adobe App Builder Template Registry](https://github.com/adobe/aio-template-submission).
 ```javascript

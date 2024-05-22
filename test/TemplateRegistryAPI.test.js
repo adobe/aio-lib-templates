@@ -146,6 +146,34 @@ describe('TemplateRegistryAPI', () => {
         expect(result).toEqual(template);
     });
 
+    test('Successfully updates a template to Template Registry', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'auth': {
+                'token': IMS_ACCESS_TOKEN
+            },
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+
+        const response = JSON.parse(fs.readFileSync(__dirname + '/fixtures/response.in-verification-template.json'));
+        const templateName = '@author/app-builder-template-2';
+        const template = _getTemplateObject(templateName);
+        const githubRepoUrl = template.links.github;
+        const templateId = template.id;
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .put(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/${templateId}`, {
+                'links': {
+                    'github': githubRepoUrl
+                }
+            })
+            .times(1)
+            .reply(200, response);
+        const result = await templateRegistryAPI.updateTemplate(templateId, githubRepoUrl);
+        expect(result).toEqual(template);
+    });
+
     test('No IMS Access Token provided for the add template operation', async () => {
         const templateRegistryAPI = new TemplateRegistryAPI();
         const templateName = '@author/app-builder-template';

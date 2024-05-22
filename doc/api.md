@@ -65,6 +65,7 @@ during an object initialization:
     * [.getTemplate(templateName)](#TemplateRegistryAPI+getTemplate) ⇒ [<code>Promise.&lt;Template&gt;</code>](#Template)
     * [.getTemplates(searchCriteria, orderByCriteria, size)](#TemplateRegistryAPI+getTemplates) ⇒ <code>AsyncGenerator</code>
     * [.addTemplate(templateName, githubRepoUrl)](#TemplateRegistryAPI+addTemplate) ⇒ [<code>Promise.&lt;Template&gt;</code>](#Template)
+    * [.updateTemplate(templateId, githubRepoUrl)](#TemplateRegistryAPI+updateTemplate) ⇒ [<code>Promise.&lt;Template&gt;</code>](#Template)
     * [.deleteTemplate(templateName)](#TemplateRegistryAPI+deleteTemplate) ⇒ <code>Promise.&lt;undefined&gt;</code>
     * [.installTemplate(templateId, templateInstallRequestBody)](#TemplateRegistryAPI+installTemplate) ⇒ [<code>Promise.&lt;ResponseObject&gt;</code>
 
@@ -110,11 +111,18 @@ It allows to paginate over the results. By default 50 template data objects are 
 Adds a template to Template Registry.
 
 **Kind**: instance method of [<code>TemplateRegistryAPI</code>](#TemplateRegistryAPI)  
+**Returns**: [<code>Promise.&lt;Template&gt;</code>](#Template) - A template data object added to Template Registry.
+
+### templateRegistryAPI.updateTemplate(templateId, githubRepoUrl) ⇒ [<code>Promise.&lt;Template&gt;</code>](#Template)
+Updates a template to Template Registry.
+
+**Kind**: instance method of [<code>TemplateRegistryAPI</code>](#TemplateRegistryAPI)  
 **Returns**: [<code>Promise.&lt;Template&gt;</code>](#Template) - A template data object added to Template Registry.  
+**Note**: Only accessible with an IMS service token
 
 | Param | Type | Description |
 | --- | --- | --- |
-| templateName | <code>String</code> | A template name (an NPM package name). |
+| templateId | <code>String</code> | A template Id. |
 | githubRepoUrl | <code>String</code> | A Github repo URL that holds a template's source code. |
 
 <a name="TemplateRegistryAPI+deleteTemplate"></a>
