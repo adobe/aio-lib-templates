@@ -203,9 +203,9 @@ describe('TemplateRegistryAPI', () => {
             apis: []
         };
         nock(TEMPLATE_REGISTRY_API_SERVER_URL)
-            .post(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/${templateId}/install`, templateInstallRequestBody)
+            .post(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/install/${templateId}`, templateInstallRequestBody)
             .times(1)
-            .reply(200, response);
+            .reply(201, response);
         const result = await templateRegistryAPI.installTemplate(templateId, templateInstallRequestBody);
         expect(result).toEqual(response);
     });

@@ -147,7 +147,7 @@ class TemplateRegistryAPI {
      * @returns {object} response object containing details of new project created with the given template
      */
     async installTemplate(templateId, templateInstallRequestBody) {
-        const url = `${this._getServerApiUrl()}/${templateId}/install`;
+        const url = `${this._getServerApiUrl()}/install/${templateId}`;
         return await this._makePostRequest(url, templateInstallRequestBody);
     }
 
