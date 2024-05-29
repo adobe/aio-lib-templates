@@ -174,13 +174,49 @@ describe('TemplateRegistryAPI', () => {
         expect(result).toEqual(template);
     });
 
+    test('Successfully install a template', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'auth': {
+                'token': IMS_ACCESS_TOKEN
+            },
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+        const response = {
+            id: 'mock-id',
+            apikey: 'mock-api-key',
+            orgId: 'mock-org-id',
+            projectId: 'mock-project-id',
+            workspaceId: 'mock-workspace-id',
+            subscriptionResult: { }
+        };
+        const templateName = '@author/app-builder-template-2';
+        const template = _getTemplateObject(templateName);
+        const templateId = template.id;
+        const templateInstallRequestBody = {
+            orgId: 'mock-org-id',
+            projectName: 'mock-project-name',
+            description: 'mock-description',
+            metadata: {},
+            apis: []
+        };
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .post(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/install/${templateId}`, templateInstallRequestBody)
+            .times(1)
+            .reply(201, response);
+        const result = await templateRegistryAPI.installTemplate(templateId, templateInstallRequestBody);
+        expect(result).toEqual(response);
+    });
+
     test('No IMS Access Token provided for the add template operation', async () => {
         const templateRegistryAPI = new TemplateRegistryAPI();
         const templateName = '@author/app-builder-template';
         const githubRepoUrl = 'https://github.com/author/app-builder-template';
         expect(templateRegistryAPI.addTemplate(templateName, githubRepoUrl)).rejects.toEqual(
             new codes.ERROR_SDK_INITIALIZATION({
-                'messageValues': 'In order to add a template to Template Registry, please provide IMS Access Token during the initialization.'
+                'messageValues': 'In order to add/install a template to Template Registry, please provide IMS Access Token during the initialization.'
             })
         );
     });

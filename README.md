@@ -1,5 +1,5 @@
 <!--
-Copyright 2022 Adobe. All rights reserved.
+Copyright 2024 Adobe. All rights reserved.
 This file is licensed to you under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License. You may obtain a copy
 of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -156,6 +156,52 @@ async function sdkTest() {
     try {
         await templateRegistryClient.deleteTemplate(templateName);
         console.log(`"${templateName}" has been successfully deleted from Adobe App Builder Template Registry.`);
+    } catch (error) {
+        console.log(error.toString());
+    }
+}
+```
+
+#### Install a template 
+Install a template from Developer Console
+
+**Note: It's only accessible with an IMS service token**
+```javascript
+const sdk = require('@adobe/aio-lib-templates');
+
+async function sdkTest() {
+    const templateRegistryClient = sdk.init({
+        'auth': {
+            'token': '<IMS_ACCESS_TOKEN>'
+        }
+    });
+    const templateId = '<valid templateId>';
+    const templateInstallRequestBody = {
+        orgId: '<valid orgId>',
+        projectName: '<projectName>',
+        description: '<description>',
+        metadata: {
+            domain : '<domain>',
+            defaultRedirectUri: '<defaultRedirectUri>'
+        },
+        apis: [
+            {
+                code: 'SDKCode',
+                credentialType: 'valid credentialType',
+                flowType: 'valid flowType',
+                licenseConfigs: [
+                    {
+                        id: 'valid id',
+                        productId: 'valid productId',
+                        op: 'valid op',
+                    }
+                ]
+            }
+        ]
+    }
+    try {
+        await templateRegistryClient.installTemplate(templateId, templateInstallRequestBody);
+        console.log(`Template with id "${templateId}" has been successfully installed.`);
     } catch (error) {
         console.log(error.toString());
     }

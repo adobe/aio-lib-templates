@@ -1,5 +1,5 @@
 /*
-Copyright 2022 Adobe. All rights reserved.
+Copyright 2024 Adobe. All rights reserved.
 This file is licensed to you under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License. You may obtain a copy
 of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -48,6 +48,13 @@ declare class TemplateRegistryAPI {
      * @param templateName - A template name (an NPM package name).
      */
     deleteTemplate(templateName: string): Promise<undefined>;
+    /**
+     * Install a template - create Developer Console project with required credentials and APIs.
+     * @param templateId TemplateId of the template to install
+     * @param TemplateInstallRequestBody request parameters
+     * @returns A response object containing details of console project created.
+     */
+    installTemplate(templateId: string, TemplateInstallRequestBody: object): Promise<object>;
 }
 
 /**
@@ -170,4 +177,20 @@ declare type Template = {
     event: Event;
     reviewLink: string;
 };
+
+/**
+ * @property orgId - The organization ID
+ * @property projectName - The name of the project
+ * @property description - The description of the project
+ * @property metadata - Key value pairs of credential metadata like allowed domains, redirect uris etc
+ * @property apis - Optional field to include license configs to be assigned to a technical account for an individual API
+ */
+
+declare type TemplateInstallRequestBody = {
+    orgId: string;
+    projectName: string;
+    description: string;
+    metadata: object;
+    apis: Array<object>;
+}
 

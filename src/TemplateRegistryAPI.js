@@ -1,5 +1,5 @@
 /*
-Copyright 2022 Adobe. All rights reserved.
+Copyright 2024 Adobe. All rights reserved.
 This file is licensed to you under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License. You may obtain a copy
 of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -141,6 +141,18 @@ class TemplateRegistryAPI {
     }
 
     /**
+     * Install a template - create Developer Console project with required credentials and APIs.
+     * @param {String} templateId TemplateId of the template to install
+     * @param {TemplateInstallRequestBody} templateInstallRequestBody request parameters
+     * @returns {object} response object containing details of new project created with the given template
+     */
+    async installTemplate(templateId, templateInstallRequestBody) {
+        const url = `${this._getServerApiUrl()}/install/${templateId}`;
+        return await this._makePostRequest(url, templateInstallRequestBody);
+    }
+
+
+    /**
      * For the internal use only. It is not supposed to be used outside of the class.
      *
      * @param {String} url Template Registry API Endpoint URL
@@ -194,7 +206,7 @@ class TemplateRegistryAPI {
     async _makePostRequest(url, payload) {
         if (!this.auth.token) {
             throw new codes.ERROR_SDK_INITIALIZATION({
-                'messageValues': 'In order to add a template to Template Registry, please provide IMS Access Token during the initialization.'
+                'messageValues': 'In order to add/install a template to Template Registry, please provide IMS Access Token during the initialization.'
             });
         }
         try {
@@ -204,7 +216,7 @@ class TemplateRegistryAPI {
                     'Authorization': `Bearer ${this.auth.token}`
                 }
             });
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 201) {
                 return response.data;
             } else {
                 const error = `Error posting to API "${url}". Response code is ${response.status}.`;
