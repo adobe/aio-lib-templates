@@ -415,6 +415,221 @@ describe('TemplateRegistryAPI', () => {
             .rejects.toThrow('ERROR_TEMPLATE_NOT_FOUND');
     });
 
+    test('Pagination through templates with next link', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+
+        const page1 = {
+            '_links': {
+                'next': 'https://template-registry-api.adobe.tbd/apis/v1.0.0/templates?size=2&page=2'
+            },
+            'items': [
+                {
+                    '_links': { 'self': { 'href': 'https://template-registry-api.adobe.tbd/apis/v1.0.0/templates/@author/app-builder-template-1' } },
+                    'id': 'd1dc1000-f32e-4172-a0ec-9b2f3ef6ac47',
+                    'author': 'Adobe Inc.',
+                    'name': '@author/app-builder-template-1',
+                    'status': 'Approved',
+                    'links': { 'npm': 'https://www.npmjs.com/package/@author/app-builder-template-1', 'github': 'https://github.com/author/app-builder-template-1' }
+                }
+            ]
+        };
+        const page2 = {
+            '_links': {},
+            'items': [
+                {
+                    '_links': { 'self': { 'href': 'https://template-registry-api.adobe.tbd/apis/v1.0.0/templates/@author/app-builder-template-2' } },
+                    'id': 'd1dc1000-f32e-4172-a0ec-9b2f3ef6ac48',
+                    'name': '@author/app-builder-template-2',
+                    'status': 'InVerification',
+                    'links': { 'npm': 'https://www.npmjs.com/package/@author/app-builder-template-2', 'github': 'https://github.com/author/app-builder-template-2' }
+                }
+            ]
+        };
+
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .get(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates`)
+            .query({ 'size': 2 })
+            .times(1)
+            .reply(200, page1);
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .get('/apis/v1.0.0/templates')
+            .query({ 'size': 2, 'page': 2 })
+            .times(1)
+            .reply(200, page2);
+
+        const results = [];
+        for await (const yieldedTemplates of templateRegistryAPI.getTemplates({}, {}, 2)) {
+            results.push(...yieldedTemplates);
+        }
+        expect(results).toHaveLength(2);
+        expect(results[0].name).toBe('@author/app-builder-template-1');
+        expect(results[1].name).toBe('@author/app-builder-template-2');
+    });
+
+    test('GET request returns non-200 status', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+
+        const templateName = '@author/app-builder-template';
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .get(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/${templateName}`)
+            .times(1)
+            .reply(500, { errors: [{ message: 'Internal server error' }] });
+        await expect(templateRegistryAPI.getTemplate(templateName))
+            .rejects.toThrow('ERROR_UNEXPECTED_ERROR');
+    });
+
+    test('No IMS Access Token provided for the update template operation', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI();
+        const templateId = 'template-id';
+        const githubRepoUrl = 'https://github.com/author/app-builder-template';
+        expect(templateRegistryAPI.updateTemplate(templateId, githubRepoUrl)).rejects.toEqual(
+            new codes.ERROR_SDK_INITIALIZATION({
+                'messageValues': 'In order to add a template to Template Registry, please provide IMS Access Token during the initialization.'
+            })
+        );
+    });
+
+    test('Invalid IMS Access Token provided for the update template operation', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'auth': {
+                'token': 'invalid-token'
+            },
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+
+        const templateId = 'template-id';
+        const githubRepoUrl = 'https://github.com/author/app-builder-template';
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .put(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/${templateId}`, {
+                'links': {
+                    'github': githubRepoUrl
+                }
+            })
+            .times(1)
+            .reply(401, { errors: [{ message: 'Invalid token' }] });
+        await expect(templateRegistryAPI.updateTemplate(templateId, githubRepoUrl))
+            .rejects.toThrow('ERROR_INVALID_IMS_ACCESS_TOKEN');
+    });
+
+    test('Not enough permissions to update a template', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'auth': {
+                'token': IMS_ACCESS_TOKEN
+            },
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+
+        const templateId = 'template-id';
+        const githubRepoUrl = 'https://github.com/author/app-builder-template';
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .put(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/${templateId}`, {
+                'links': {
+                    'github': githubRepoUrl
+                }
+            })
+            .times(1)
+            .reply(403, { errors: [{ message: 'Forbidden' }] });
+        await expect(templateRegistryAPI.updateTemplate(templateId, githubRepoUrl))
+            .rejects.toThrow('ERROR_PERMISSION_DENIED');
+    });
+
+    test('Template not found, update operation', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'auth': {
+                'token': IMS_ACCESS_TOKEN
+            },
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+
+        const templateId = 'template-id';
+        const githubRepoUrl = 'https://github.com/author/app-builder-template';
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .put(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/${templateId}`, {
+                'links': {
+                    'github': githubRepoUrl
+                }
+            })
+            .times(1)
+            .reply(404);
+        await expect(templateRegistryAPI.updateTemplate(templateId, githubRepoUrl))
+            .rejects.toThrow('ERROR_TEMPLATE_NOT_FOUND');
+    });
+
+    test('Unexpected error in update template operation', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'auth': {
+                'token': IMS_ACCESS_TOKEN
+            },
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+
+        const templateId = 'template-id';
+        const githubRepoUrl = 'https://github.com/author/app-builder-template';
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .put(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/${templateId}`, {
+                'links': {
+                    'github': githubRepoUrl
+                }
+            })
+            .times(1)
+            .reply(500);
+        await expect(templateRegistryAPI.updateTemplate(templateId, githubRepoUrl))
+            .rejects.toThrow('ERROR_UNEXPECTED_ERROR');
+    });
+
+    test('No IMS Access Token provided for the install template operation', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI();
+        const templateId = 'template-id';
+        const templateInstallRequestBody = {
+            orgId: 'mock-org-id',
+            projectName: 'mock-project-name'
+        };
+        expect(templateRegistryAPI.installTemplate(templateId, templateInstallRequestBody)).rejects.toEqual(
+            new codes.ERROR_SDK_INITIALIZATION({
+                'messageValues': 'In order to add/install a template to Template Registry, please provide IMS Access Token during the initialization.'
+            })
+        );
+    });
+
+    test('Network error without response object', async () => {
+        const templateRegistryAPI = new TemplateRegistryAPI({
+            'server': {
+                'url': TEMPLATE_REGISTRY_API_SERVER_URL,
+                'version': TEMPLATE_REGISTRY_API_VERSION
+            }
+        });
+
+        const templateName = '@author/app-builder-template';
+        nock(TEMPLATE_REGISTRY_API_SERVER_URL)
+            .get(`/apis/${TEMPLATE_REGISTRY_API_VERSION}/templates/${templateName}`)
+            .times(1)
+            .replyWithError('Network error');
+        await expect(templateRegistryAPI.getTemplate(templateName))
+            .rejects.toThrow('ERROR_UNEXPECTED_ERROR');
+    });
+
     function _getTemplateObject(templateName) {
         switch (templateName) {
         case '@author/app-builder-template-1': {
