@@ -25,7 +25,7 @@
   "dependencies": {
     "@adobe/aio-lib-core-errors": "^4",
     "@adobe/aio-lib-core-logging": "^3",
-    "axios": "^1.7.9"
+    "@adobe/aio-lib-core-networking": "^5.0.4"
   },
   "engines": {
     "node": ">=18"

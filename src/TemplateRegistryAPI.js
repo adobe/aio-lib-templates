@@ -9,7 +9,7 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-const axios = require('axios');
+const { createFetch } = require('@adobe/aio-lib-core-networking');
 const logger = require('@adobe/aio-lib-core-logging')('@adobe/aio-lib-templates:TemplateRegistry', { 'level': process.env.LOG_LEVEL });
 const { codes } = require('./SDKErrors');
 
@@ -37,6 +37,7 @@ class TemplateRegistryAPI {
             'version': 'v1',
         };
         this.auth = {};
+        this.fetch = createFetch();
 
         if (config.server?.url || config.server?.version) {
             this.server = { ...this.server, ...config.server };
@@ -177,18 +178,21 @@ class TemplateRegistryAPI {
      * @private
      */
     async _makeGetRequest(url, params = {}) {
-        logger.debug(`Calling "${axios.getUri({ url, params })}" ...`);
+        const queryParams = new URLSearchParams(params);
+        const fullUrl = Object.keys(params).length > 0 ? `${url}?${queryParams.toString()}` : url;
+        logger.debug(`Calling "${fullUrl}" ...`);
         try {
-            const response = await axios.get(url, { 'params': params });
-            if (response.status === 200) {
-                return response.data;
+            const response = await this.fetch(fullUrl);
+            if (response.ok) {
+                return await response.json();
             } else {
-                const error = `Error fetching "${url}". Response code is ${response.status}.`;
-                logger.warn(error);
-                throw new codes.ERROR_UNEXPECTED_ERROR({ 'messageValues': 'An unexpected error happened. Please check logs or try again later.' });
+                const errorData = await this._safeParseJson(response);
+                const error = new Error(`Error fetching "${fullUrl}". Response code is ${response.status}.`);
+                error.response = { status: response.status, data: errorData };
+                throw error;
             }
         } catch (e) {
-            const error = `Error fetching "${url}". ${e.toString()}`;
+            const error = `Error fetching "${fullUrl}". ${e.toString()}`;
             logger.warn(error);
             const exception = this._processResponseException(e);
             throw exception;
@@ -210,18 +214,21 @@ class TemplateRegistryAPI {
             });
         }
         try {
-            const response = await axios.post(url, payload, {
-                'headers': {
+            const response = await this.fetch(url, {
+                method: 'POST',
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.auth.token}`
-                }
+                },
+                body: JSON.stringify(payload)
             });
             if (response.status === 200 || response.status === 201) {
-                return response.data;
+                return await response.json();
             } else {
-                const error = `Error posting to API "${url}". Response code is ${response.status}.`;
-                logger.warn(error);
-                throw new codes.ERROR_UNEXPECTED_ERROR({ 'messageValues': 'An unexpected error happened. Please check logs or try again later.' });
+                const errorData = await this._safeParseJson(response);
+                const error = new Error(`Error posting to API "${url}". Response code is ${response.status}.`);
+                error.response = { status: response.status, data: errorData };
+                throw error;
             }
         } catch (e) {
             const error = `Error posting to API "${url}". ${e.toString()}`;
@@ -246,18 +253,21 @@ class TemplateRegistryAPI {
             });
         }
         try {
-            const response = await axios.put(url, payload, {
-                'headers': {
+            const response = await this.fetch(url, {
+                method: 'PUT',
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.auth.token}`
-                }
+                },
+                body: JSON.stringify(payload)
             });
             if (response.status === 200) {
-                return response.data;
+                return await response.json();
             } else {
-                const error = `Error posting to API "${url}". Response code is ${response.status}.`;
-                logger.warn(error);
-                throw new codes.ERROR_UNEXPECTED_ERROR({ 'messageValues': 'An unexpected error happened. Please check logs or try again later.' });
+                const errorData = await this._safeParseJson(response);
+                const error = new Error(`Error posting to API "${url}". Response code is ${response.status}.`);
+                error.response = { status: response.status, data: errorData };
+                throw error;
             }
         } catch (e) {
             const error = `Error posting to API "${url}". ${e.toString()}`;
@@ -281,17 +291,19 @@ class TemplateRegistryAPI {
             });
         }
         try {
-            const response = await axios.delete(url, {
-                'headers': {
+            const response = await this.fetch(url, {
+                method: 'DELETE',
+                headers: {
                     'Authorization': `Bearer ${this.auth.token}`
                 }
             });
             if (response.status === 200) {
                 return;
             } else {
-                const error = `Error deleting "${url}". Response code is ${response.status}.`;
-                logger.warn(error);
-                throw new codes.ERROR_UNEXPECTED_ERROR({ 'messageValues': 'An unexpected error happened. Please check logs or try again later.' });
+                const errorData = await this._safeParseJson(response);
+                const error = new Error(`Error deleting "${url}". Response code is ${response.status}.`);
+                error.response = { status: response.status, data: errorData };
+                throw error;
             }
         } catch (e) {
             const error = `Error deleting "${url}". ${e.toString()}`;
@@ -327,20 +339,36 @@ class TemplateRegistryAPI {
      * @private
      */
     _processResponseException(exception) {
-        if (exception.response.status === 401) {
-            const errMsg = this._errorsToString(exception.response.data.errors);
-            logger.warn(errMsg);
-            return new codes.ERROR_INVALID_IMS_ACCESS_TOKEN({ 'messageValues': errMsg });
-        } else if (exception.response.status === 403) {
-            const errMsg = this._errorsToString(exception.response.data.errors);
-            logger.warn(errMsg);
-            return new codes.ERROR_PERMISSION_DENIED({ 'messageValues': errMsg });
-        } else if (exception.response.status === 404) {
-            return new codes.ERROR_TEMPLATE_NOT_FOUND({ 'messageValues': 'The provided template does not exist in Template Registry.' });
-        } else if (exception.response.status === 409) {
-            return new codes.ERROR_TEMPLATE_ALREADY_EXISTS({ 'messageValues': 'The provided template already exists in Template Registry.' });
-        } else {
-            return new codes.ERROR_UNEXPECTED_ERROR({ 'messageValues': 'An unexpected error happened. Please check logs or try again later.' });
+        if (exception.response && exception.response.status) {
+            if (exception.response.status === 401) {
+                const errMsg = this._errorsToString(exception.response.data?.errors);
+                logger.warn(errMsg);
+                return new codes.ERROR_INVALID_IMS_ACCESS_TOKEN({ 'messageValues': errMsg });
+            } else if (exception.response.status === 403) {
+                const errMsg = this._errorsToString(exception.response.data?.errors);
+                logger.warn(errMsg);
+                return new codes.ERROR_PERMISSION_DENIED({ 'messageValues': errMsg });
+            } else if (exception.response.status === 404) {
+                return new codes.ERROR_TEMPLATE_NOT_FOUND({ 'messageValues': 'The provided template does not exist in Template Registry.' });
+            } else if (exception.response.status === 409) {
+                return new codes.ERROR_TEMPLATE_ALREADY_EXISTS({ 'messageValues': 'The provided template already exists in Template Registry.' });
+            }
+        }
+        return new codes.ERROR_UNEXPECTED_ERROR({ 'messageValues': 'An unexpected error happened. Please check logs or try again later.' });
+    }
+
+    /**
+     * For the internal use only. It is not supposed to be used outside of the class.
+     *
+     * @param {Response} response A fetch Response object.
+     * @returns {Promise<Object>}
+     * @private
+     */
+    async _safeParseJson(response) {
+        try {
+            return await response.json();
+        } catch (e) {
+            return {};
         }
     }
 
